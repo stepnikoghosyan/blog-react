@@ -1,3 +1,4 @@
+// styles
 import './spinner.scss';
 
 export function Spinner({ centerInRelativeParent }) {

@@ -1,6 +1,8 @@
 import { FieldState, FormState } from "formstate";
-import { Validators } from "../../../utils/validators";
 import { action, makeObservable, observable } from "mobx";
+
+// validators
+import { Validators } from "../../../utils/validators";
 
 class _LoginViewStore {
   form = new FormState({
