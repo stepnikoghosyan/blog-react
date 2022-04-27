@@ -3,9 +3,10 @@ import { BaseApiService } from "../../shared/services/base-api.service";
 const BASE_ENDPOINT = 'posts';
 
 export const PostsService = {
-  getPosts: () => {
+  getPosts: (queryParams) => {
     return BaseApiService.get(BASE_ENDPOINT, {
       params: {
+        ...queryParams,
         showAll: true
       },
     })

@@ -12,6 +12,7 @@ class _AppDataStore {
   }
 
   setCurrentUser(data) {
+    console.log('set current user:', data);
     this.currentUser = data;
   }
 

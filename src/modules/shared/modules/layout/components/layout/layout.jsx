@@ -17,8 +17,9 @@ export function Layout() {
   const navigate = useNavigate();
   const currentUser = AppDataStore.currentUser;
 
+  console.log('Layout 1');
+
   useEffect(() => {
-    console.log('hopar');
     if (!currentUser) {
       navigate(getFullRoute(ROUTES.LOGIN));
     }

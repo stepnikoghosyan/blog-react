@@ -7,10 +7,15 @@ const BASE_ENDPOINT = 'users';
 
 export const UsersService = {
   getCurrentUser: () => {
-    return BaseApiService.get(`${BASE_ENDPOINT}/my-profile`)
+    return BaseApiService.get(`${ BASE_ENDPOINT }/my-profile`)
       .then((response) => {
         AppDataStore.setCurrentUser(response.data);
         return response;
       });
+  },
+  getUsers: (queryParams) => {
+    return BaseApiService.get(`${ BASE_ENDPOINT }`, {
+      params: queryParams,
+    });
   },
 };

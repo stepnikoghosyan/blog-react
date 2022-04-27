@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { observer, useLocalObservable } from "mobx-react-lite";
 
 // stores
@@ -10,12 +11,14 @@ import { PostCard } from "../post-card/post-card";
 
 export const PostsList = observer(function PostsList() {
   const store = useLocalObservable(() => new PostsDataStore());
+  const searchParams = useSearchParams()[0];
+
   const isLoading = store.isLoading;
   const posts = store.posts;
 
   useEffect(() => {
-    store.getPosts();
-  }, [store]);
+    store.getPosts(Object.fromEntries(searchParams.entries()));
+  }, [store, searchParams]);
 
   return (
     <>

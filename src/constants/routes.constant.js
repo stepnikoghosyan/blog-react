@@ -6,6 +6,7 @@ export const ROUTES = Object.freeze({
   HOME: 'home',
   POSTS: 'posts',
   VIEW_POST: 'posts',
+  CREATE_POST: 'create',
   UPDATE_POST: 'edit',
   USERS: 'users',
   PROFILE: 'profile',
