@@ -1,15 +1,18 @@
-// components
-import { PostsList } from "../posts-list/posts-list";
-import { PostFilters } from "../post-filters/post-filters";
+import { Route, Routes } from "react-router-dom";
+
+// routing
+import { postsRouting } from "../../routing/posts-routing";
 
 export function Posts() {
   return (
-    <>
-      <h1 className="text-center">Posts</h1>
-
-      <PostFilters/>
-
-      <PostsList/>
-    </>
+    <Routes>
+      {
+        postsRouting().map(
+          ({ path, element }) => (
+            <Route key={ path } path={ path } element={ element }/>
+          )
+        )
+      }
+    </Routes>
   );
 }

@@ -13,12 +13,12 @@ export function getNavigationItemsConfig() {
     },
     {
       label: 'Users',
-      route: getFullRoute(ROUTES.USERS),
+      route: ROUTES.USERS,
       routerLinkActive: 'custom-active',
     },
     {
       label: 'Posts',
-      route: getFullRoute(ROUTES.POSTS),
+      route: ROUTES.POSTS,
       routerLinkActive: 'custom-active',
     },
   ];
