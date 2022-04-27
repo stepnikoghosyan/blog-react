@@ -1,12 +1,17 @@
+// stores
+import { AppDataStore } from "../../shared/stores/app-data-store";
+
 // services
 import { BaseApiService } from "../../shared/services/base-api.service";
 import { StorageService } from "../../shared/services/storage-service";
 
 // constants
 import { ROUTES } from "../../../constants/routes.constant";
-import { AppDataStore } from "../../shared/stores/app-data-store";
-const BASE_ENDPOINT = 'auth';
 
+// utils
+import { getFullRoute } from "../../../utils/get-full-route.helper";
+
+const BASE_ENDPOINT = 'auth';
 export const AuthService = {
   login: (payload) => {
     return BaseApiService.post(`${ BASE_ENDPOINT }/login`, payload);
@@ -32,6 +37,6 @@ export const AuthService = {
   logout: (navigate) => {
     StorageService.clear();
     AppDataStore.clear();
-    navigate(ROUTES.LOGIN);
+    navigate(getFullRoute(ROUTES.LOGIN));
   },
 };

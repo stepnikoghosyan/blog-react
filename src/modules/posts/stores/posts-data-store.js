@@ -1,16 +1,22 @@
-import { action, makeObservable, observable } from "mobx";
+import { makeObservable, observable } from "mobx";
+
+// services
+import { PostsService } from "../services/posts.service";
 
 export class PostsDataStore {
   posts = [];
+  isLoading = true;
 
   constructor() {
     makeObservable(this, {
       posts: observable,
-      setPosts: action,
+      isLoading: observable,
     })
   }
 
-  setPosts(data) {
-    this.posts = data || [];
+  async getPosts() {
+    const response = await PostsService.getPosts();
+    this.posts = response.data.results;
+    this.isLoading = false;
   }
 }

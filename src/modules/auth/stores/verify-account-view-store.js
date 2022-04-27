@@ -4,7 +4,7 @@ import { action, makeObservable, observable } from "mobx";
 // utils
 import { Validators } from "../../../utils/validators";
 
-class _VerifyAccountViewStore {
+export class VerifyAccountViewStore {
   titleState = 'Verifying Your account, please wait...';
   isLoading = true;
   showEmailInput = false;
@@ -34,5 +34,3 @@ class _VerifyAccountViewStore {
     this.showEmailInput = value;
   }
 }
-
-export const VerifyAccountViewStore = new _VerifyAccountViewStore();

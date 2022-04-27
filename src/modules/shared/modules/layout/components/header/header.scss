@@ -6,7 +6,24 @@
 }
 
 .custom-active {
-  color: #fff;
   background-color: #0d6efd;
   border-radius: 5px;
+}
+
+.custom-active, .custom-active:focus {
+  color: #fff !important;
+}
+
+#dropdownUser1 {
+  outline: none;
+  background-color: transparent;
+  border: none;
+}
+
+#dropdownUser1:hover {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  right: 0;
 }

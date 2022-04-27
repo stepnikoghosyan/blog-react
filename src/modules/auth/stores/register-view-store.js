@@ -1,8 +1,10 @@
-import { FieldState, FormState } from "formstate";
 import { action, makeObservable, observable } from "mobx";
+import { FieldState, FormState } from "formstate";
+
+// validators
 import { Validators } from "../../../utils/validators";
 
-class _RegisterViewStore {
+export class RegisterViewStore {
   form = new FormState({
     firstName: new FieldState('').validators(Validators.required),
     lastName: new FieldState('').validators(Validators.required),
@@ -32,5 +34,3 @@ class _RegisterViewStore {
     this.isLoading = value;
   }
 }
-
-export const RegisterViewStore = new _RegisterViewStore();

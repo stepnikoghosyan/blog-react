@@ -2,7 +2,8 @@ import axios from "axios";
 import { StorageService } from "./storage-service";
 
 const baseConfig = {
-  baseURL: 'https://angular-course-1.herokuapp.com/',
+  // baseURL: 'https://angular-course-1.herokuapp.com/',
+  baseURL: 'http://localhost:3001/',
   headers: {
     'Content-Type': 'application/json',
   },

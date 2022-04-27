@@ -1,11 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
-import { observer } from "mobx-react-lite";
+import { observer, useLocalObservable } from "mobx-react-lite";
 
 // stores
 import { RegisterViewStore } from "../../stores/register-view-store";
-
-// services
-import { AuthService } from "../../services/auth.service";
+import { RegisterDataStore } from "../../stores/register-data-store";
 
 // components
 import { FormField } from "../../../forms/components/form-field/form-field";
@@ -18,44 +16,26 @@ import { ROUTES } from "../../../../constants/routes.constant";
 // utils
 import { getFullRoute } from "../../../../utils/get-full-route.helper";
 
-export const Register = observer(() => {
-  const form = RegisterViewStore.form;
-  const apiErrorMsg = RegisterViewStore.apiErrorMsg;
-  const isLoading = RegisterViewStore.isLoading;
+export const Register = observer(function Register() {
+  const viewStore = useLocalObservable(() => new RegisterViewStore());
+  const dataStore = useLocalObservable(() => new RegisterDataStore(viewStore));
+
+  const form = viewStore.form;
+  const apiErrorMsg = viewStore.apiErrorMsg;
+  const isLoading = viewStore.isLoading;
 
   const navigate = useNavigate();
 
   async function onSubmit(e) {
     e.preventDefault();
 
-    RegisterViewStore.setIsLoading(true);
-
-    const res = await form.validate();
-    if (res.hasError) {
+    if (isLoading) {
       return;
     }
 
-    try {
-      await AuthService.register({
-        firstName: form.$.firstName.$,
-        lastName: form.$.lastName.$,
-        email: form.$.email.$,
-        password: form.$.password.$,
-      });
-
-      navigate(getFullRoute(ROUTES.LOGIN));
-
-      // TODO: Show success toastr
-    } catch (err) {
-      if (!!err.response) {
-        RegisterViewStore.setApiErrorMsg(err.response.data.message);
-      } else {
-        RegisterViewStore.setApiErrorMsg('');
-        alert('Unknown error occurred');
-      }
-    } finally {
-      RegisterViewStore.setIsLoading(false);
-    }
+    dataStore
+      .register()
+      .then(() => navigate(getFullRoute(ROUTES.LOGIN)));
   }
 
   return (

@@ -2,8 +2,9 @@ import { Navigate } from 'react-router-dom';
 
 // components
 import { Auth } from "./modules/auth/components/auth/Auth";
-import { Posts } from "./modules/posts/components/posts/posts";
 import { Layout } from "./modules/shared/modules/layout/components/layout/layout";
+import { Home } from "./modules/home/components/home/home";
+import { Posts } from "./modules/posts/components/posts/posts";
 
 // constants
 import { ROUTES } from "./constants/routes.constant";
@@ -18,7 +19,8 @@ export function appRouting() {
       path: '',
       element: <Layout/>,
       children: [
-        { index: true, element: <Navigate to={ getFullRoute(ROUTES.POSTS) }/> }, // TODO: change index to Home
+        { index: true, element: <Navigate to={ getFullRoute(ROUTES.HOME) }/> },
+        { path: ROUTES.HOME, element: <Home/> },
         { path: `${ ROUTES.POSTS }/*`, element: <Posts/> },
       ],
     },

@@ -1,23 +1,21 @@
-import { observer } from "mobx-react-lite";
-import { PostsListViewStore } from "../../stores/posts-list-view-store";
+import { useEffect } from "react";
+import { observer, useLocalObservable } from "mobx-react-lite";
+
+// stores
+import { PostsDataStore } from "../../stores/posts-data-store";
+
+// components
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { PostCard } from "../post-card/post-card";
-import { useEffect } from "react";
-import { PostsService } from "../../services/posts.service";
 
-export const PostsList = observer(() => {
-  const isLoading = PostsListViewStore.isLoading;
-  const posts = PostsListViewStore.posts;
+export const PostsList = observer(function PostsList() {
+  const store = useLocalObservable(() => new PostsDataStore());
+  const isLoading = store.isLoading;
+  const posts = store.posts;
 
   useEffect(() => {
-    async function getPosts() {
-      const response = await PostsService.getPosts();
-      PostsListViewStore.setPosts(response.data.results);
-      PostsListViewStore.setIsLoading(false);
-    }
-
-    getPosts();
-  }, []);
+    store.getPosts();
+  }, [store]);
 
   return (
     <>

@@ -4,7 +4,7 @@ import { action, makeObservable, observable } from "mobx";
 // validators
 import { Validators } from "../../../utils/validators";
 
-class _LoginViewStore {
+export class LoginViewStore {
   form = new FormState({
     email: new FieldState('').validators(Validators.required, Validators.email),
     password: new FieldState('').validators(Validators.required),
@@ -32,5 +32,3 @@ class _LoginViewStore {
     this.isLoading = value;
   }
 }
-
-export const LoginViewStore = new _LoginViewStore();

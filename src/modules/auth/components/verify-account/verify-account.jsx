@@ -1,50 +1,42 @@
-import { observer } from "mobx-react-lite";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { observer, useLocalObservable } from "mobx-react-lite";
+
+// stores
 import { VerifyAccountViewStore } from "../../stores/verify-account-view-store";
+import { VerifyAccountDataStore } from "../../stores/verify-account-data-store";
+
+// components
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 import { FormField } from "../../../forms/components/form-field/form-field";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { ROUTES } from "../../../../constants/routes.constant";
-import { getFullRoute } from "../../../../utils/get-full-route.helper";
-import { useEffect } from "react";
-import { AuthService } from "../../services/auth.service";
 
-export const VerifyAccount = observer(() => {
-  const titleState = VerifyAccountViewStore.titleState;
-  const isLoading = VerifyAccountViewStore.isLoading;
-  const showEmailInput = VerifyAccountViewStore.showEmailInput;
-  const emailCtrl = VerifyAccountViewStore.emailCtrl;
+// constants
+import { ROUTES } from "../../../../constants/routes.constant";
+
+// utils
+import { getFullRoute } from "../../../../utils/get-full-route.helper";
+
+export const VerifyAccount = observer(function VerifyAccount() {
+  const viewStore = useLocalObservable(() => new VerifyAccountViewStore());
+  const dataStore = useLocalObservable(() => new VerifyAccountDataStore(viewStore));
 
   const { activationToken } = useParams();
   const navigate = useNavigate();
 
+  const titleState = viewStore.titleState;
+  const isLoading = viewStore.isLoading;
+  const showEmailInput = viewStore.showEmailInput;
+  const emailCtrl = viewStore.emailCtrl;
+
   useEffect(() => {
-    async function verifyAccount() {
-      try {
-        await AuthService.verifyAccount(activationToken);
-        // TODO: show success toastr
-        navigate(getFullRoute(ROUTES.LOGIN));
-      } catch (err) {
-        let message;
-        if (!!err.response) {
-          message = err.response.data.message || 'Unknown Error Occurred';
-        } else {
-          message = 'Unknown Error Occurred';
-        }
-
-        // TODO: show error toastr
-        alert(message);
-
-        VerifyAccountViewStore.setTitleState('Could not verify account.');
-        VerifyAccountViewStore.setIsLoading(false);
-      }
-    }
-
-    verifyAccount();
-  }, [activationToken, navigate]);
+    dataStore
+      .verifyAccount(activationToken)
+      .then(() => navigate(getFullRoute(ROUTES.LOGIN)));
+  }, [dataStore, activationToken, navigate]);
 
   function onResendActivationToken() {
-    VerifyAccountViewStore.setShowEmailInput(true);
-    VerifyAccountViewStore.setTitleState('Enter your email address and we\'ll send you verification email again.');
+    viewStore.setShowEmailInput(true);
+    viewStore.setTitleState('Enter your email address and we\'ll send you verification email again.');
   }
 
   async function onSubmit(e) {
@@ -54,32 +46,9 @@ export const VerifyAccount = observer(() => {
       return;
     }
 
-    const result = await emailCtrl.validate();
-    if (result.hasError) {
-      return;
-    }
-
-    VerifyAccountViewStore.setIsLoading(true);
-    VerifyAccountViewStore.setTitleState('Verifying Your account, please wait...');
-
-    try {
-      await AuthService.resendActivationToken(emailCtrl.$);
-
-      // TODO: show success toastr
-      navigate(getFullRoute(ROUTES.LOGIN));
-    } catch (err) {
-      let message;
-      if (!!err.response) {
-        message = err.response.data.message || 'Unknown Error Occurred';
-      } else {
-        message = 'Unknown Error Occurred';
-      }
-
-      // TODO: show error toastr
-      alert(message);
-      VerifyAccountViewStore.setIsLoading(false);
-      VerifyAccountViewStore.setTitleState('Failed to re-send activated token.');
-    }
+    dataStore
+      .resendActivationToken()
+      .then(() => navigate(getFullRoute(ROUTES.LOGIN)));
   }
 
   return (

@@ -1,63 +1,41 @@
 import { Link, useNavigate } from "react-router-dom";
-import { observer } from "mobx-react-lite";
+import { observer, useLocalObservable } from "mobx-react-lite";
 
 // stores
 import { LoginViewStore } from "../../stores/login-view-store";
+import { LoginDataStore } from "../../stores/login-data-store";
 
 // components
 import { FormField } from "../../../forms/components/form-field/form-field";
 import { PasswordField } from "../../../shared/components/password-field/password-field";
 import { Spinner } from "../../../shared/components/spinner/Spinner";
 
-// services
-import { AuthService } from "../../services/auth.service";
-import { UsersService } from "../../../users/services/users.service";
-
 // utils
 import { getFullRoute } from "../../../../utils/get-full-route.helper";
 
 // constants
 import { ROUTES } from "../../../../constants/routes.constant";
-import { StorageService } from "../../../shared/services/storage-service";
 
-export const Login = observer(() => {
-  const form = LoginViewStore.form;
-  const apiErrorMsg = LoginViewStore.apiErrorMsg;
-  const isLoading = LoginViewStore.isLoading;
+export const Login = observer(function Login() {
+  const viewStore = useLocalObservable(() => new LoginViewStore());
+  const dataStore = useLocalObservable(() => new LoginDataStore(viewStore));
+
+  const form = viewStore.form;
+  const apiErrorMsg = viewStore.apiErrorMsg;
+  const isLoading = viewStore.isLoading;
 
   const navigate = useNavigate();
 
-  async function onSubmit(event) {
+  function onSubmit(event) {
     event.preventDefault();
 
-    LoginViewStore.setIsLoading(true);
-
-    const res = await form.validate();
-    if (res.hasError) {
+    if (isLoading) {
       return;
     }
 
-    try {
-      const response = await AuthService.login({
-        email: form.$.email.$,
-        password: form.$.password.$,
-      });
-
-      StorageService.setTokens(response.data);
-
-      await UsersService.getCurrentUser();
-
-      navigate('/home');
-    } catch (err) {
-      if (!!err.response) {
-        LoginViewStore.setApiErrorMsg(err.response.data.message);
-      } else {
-        LoginViewStore.setApiErrorMsg('');
-        alert('Unknown error occurred');
-      }
-    } finally {
-      LoginViewStore.setIsLoading(false);
-    }
+    dataStore
+      .login()
+      .then(() => navigate(getFullRoute(ROUTES.HOME)));
   }
 
   return (

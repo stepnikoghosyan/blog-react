@@ -1,44 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { observer } from "mobx-react-lite";
 
 // styles
 import './header.scss';
 
-// stores
-import { AppDataStore } from "../../../../stores/app-data-store";
-import { HeaderViewStore } from "../../stores/header-view-store";
-
-// services
-import { AuthService } from "../../../../../auth/services/auth.service";
-
 // configs
 import { getNavigationItemsConfig } from "../../configs/navigation-items.config";
 
-// utils
-import { getFullRoute } from "../../../../../../utils/get-full-route.helper";
-
-// constants
-import { ROUTES } from "../../../../../../constants/routes.constant";
-
 // assets
-import noImage from '../../../../../shared/assets/no-image.png';
+import { ProfileDropdown } from "../profile-dropdown/profile-dropdown";
 
-export const Header = observer(() => {
-  const currentUserId = AppDataStore.currentUser.id;
-  const currentUserProfilePicture = AppDataStore.currentUser.profilePictureUrl || noImage;
+export const Header = observer(function Header() {
   const navigationItems = getNavigationItemsConfig();
-
-  const navigate = useNavigate();
-
-  const showProfileDropdown = HeaderViewStore.showProfileDropdown;
-
-  function logout() {
-    AuthService.logout(navigate);
-  }
-
-  function toggleDropdown() {
-    HeaderViewStore.setShowProfileDropdown(!showProfileDropdown);
-  }
 
   return (
     <header className="p-3 mb-3 border-bottom">
@@ -52,41 +25,18 @@ export const Header = observer(() => {
           <ul className="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0 me-2">
             {
               navigationItems.map((item) => (
-                <li key={item.route}>
-                  <Link to={ item.route } className="nav-link px-2 link-dark">
+                <li key={ item.route }>
+                  <NavLink to={ item.route }
+                           className={ ({ isActive }) => 'nav-link px-2 link-dark' + (isActive ? ' custom-active' : '') }>
                     { item.label }
-                  </Link>
+                  </NavLink>
                 </li>
               ))
             }
           </ul>
 
           { /*Profile dropdown */ }
-          <div className="dropdown text-end">
-            <a onClick={toggleDropdown} className="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1" aria-expanded="false">
-              <img src={ currentUserProfilePicture } alt="mdo" width="32" height="32" className="rounded-circle"/>
-            </a>
-            <ul className="dropdown-menu text-small" style={{display: showProfileDropdown ? 'block' : 'none'}} aria-labelledby="dropdownUser1">
-              <li>
-                <Link className="dropdown-item"
-                      to={ getFullRoute(ROUTES.POSTS) }
-                      params={ { userID: currentUserId } }>
-                  My Posts
-                </Link>
-              </li>
-              <li>
-                <Link className="dropdown-item" to={ getFullRoute(ROUTES.PROFILE) }>Profile</Link>
-              </li>
-
-              <li>
-                <hr className="dropdown-divider"/>
-              </li>
-
-              <li>
-                <button onClick={ logout } className="dropdown-item">Sign out</button>
-              </li>
-            </ul>
-          </div>
+          <ProfileDropdown/>
         </div>
       </div>
     </header>

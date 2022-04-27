@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { getFullRoute } from "../../../../utils/get-full-route.helper";
 import { ROUTES } from "../../../../constants/routes.constant";
 import { AppDataStore } from "../../../shared/stores/app-data-store";
+import { LazyImage } from "../../../shared/modules/lazy-image/components/lazy-image/lazy-image";
 
 export function PostCard({
                            post,
@@ -14,17 +15,7 @@ export function PostCard({
     <div className='col'>
       <div className="card h-100">
       { /*Image*/ }
-      <span className="lazy-image">
-        <span className="position-relative">
-
-          <img
-            src={ post.imageUrl }
-            alt="Image"
-          />
-
-          {/*<div className="skeleton"></div>*/ }
-        </span>
-      </span>
+        <LazyImage imageSource={post.imageUrl}/>
 
       { /*Card Body*/ }
       <div className="card-body">
